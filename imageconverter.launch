@@ -1,9 +1,41 @@
 <!---->
 <launch>
 
+  <node pkg="imageconverter" name="sync" type="sync" output="screen">
+</node>
 
+<arg name="calib_path"      default="/home/anjana/vision/cam0.txt" /> 
   <node pkg="imageconverter" name="imageconverter" type="imageconverter" output="screen">
+       <param name="calib_file" type="string" value="$(arg calib_path)"/>
   </node>
 
  
-</launch>
+
+  <node pkg="imageconverter" name="logger" type="logger" output="screen">
+  </node>
+
+ 
+  <node name="image_view1" pkg="image_view" type="image_view" respawn="false" output="screen">
+        <remap from="image" to="/cam3/image_raw_sync" />
+ </node>
+
+  <node name="image_view2" pkg="image_view" type="image_view" respawn="false" output="screen">
+         <remap from="image" to="/image_conversion/image" />
+ </node>
+
+<param name="use_sim_time" value="true" />
+
+
+
+<arg name="path" default="/mnt/boost_fieldA/cmu_data/vision_data/2016_09_25_Pendleton_BAP/row010.5_S2N/" />
+
+<arg name="file" default="row_010.5_S2N" />
+
+  <node pkg="rosbag" type="play" name="player1" output="screen" args="-u 4 -r 0.2 $(arg path)$(arg file).bag --clock" />
+
+</launch> 
+
+
+
+
+
